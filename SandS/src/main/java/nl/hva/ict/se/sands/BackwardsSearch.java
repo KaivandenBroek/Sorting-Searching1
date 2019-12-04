@@ -3,8 +3,8 @@ package nl.hva.ict.se.sands;
 public class BackwardsSearch {
 
     private int comparisons;
-    private int ALPHABET = 128;
-    private int[] right = new int[ALPHABET];     // the bad-character skip array
+    private int ALPHABET = 128; // assume ASCII character set
+    private int[] right = new int[ALPHABET];
 
     /**
      * Returns index of the right most location where <code>needle</code> occurs within <code>haystack</code>. Searching
@@ -21,36 +21,74 @@ public class BackwardsSearch {
         int n = needle.length();
         int skip;
 
-        // init
-        pre(needle, haystack, h);
+        if (n == 0) {
+            return -1;
+        }
 
-        //loop over haystack
+        // init array
+        pre(needle, h);
+
+        //loop over haystack right to left, i think
+        for (int i = h; i >= h - n; i -= skip) {
+            skip = 0;
+            //loop over pattern, right to left
+            for (int j = n - 1; j >= 0; j--) { //TODO loop left to right to get test working
+                //check if there is a mismatch
+                if (needle.charAt(j) != haystack.charAt(i - j)) {
+                    skip = Math.max(1, j - right[haystack.charAt(i - j)]); //TODO insert all skip methods here
+                    System.out.println(j - right[haystack.charAt(i - j)]);
+                    break;
+                }
+            }
+            //returns index neelde
+            if (skip == 0) return i;
+        }
+        //nothing found returns false/-1
+        return -1;
+    }
+
+    int findLocationForward(String needle, String haystack) {
+
+        int h = haystack.length();
+        int n = needle.length();
+        int skip;
+
+        if (n == 0) {
+            return -1;
+        }
+
+        // init array
+        pre(needle, h);
+
+        //loop over haystack left to right
         for (int i = 0; i <= h - n; i += skip) {
             skip = 0;
-
             //loop over pattern, right to left
             for (int j = n - 1; j >= 0; j--) {
                 //check if there is a mismatch
                 if (needle.charAt(j) != haystack.charAt(i + j)) {
-                    skip = Math.max(1, j - right[haystack.charAt(i + j)]);
+                    skip = Math.max(1, j - right[haystack.charAt(i + j)]); //TODO insert all skip methods here
                     break;
                 }
             }
+            //returns index neelde
             if (skip == 0) return i;
         }
-        return right.length;
+        //nothing found returns false/-1
+        return -1;
     }
 
-    private void pre(String needle, String haystack, int length) {
-        //create array for all chars
-        right = new int[ALPHABET];
-        //initialize everything with -1
-        for (int c = 0; c < length; c++)
+    private void pre(String needle, int length) {
+
+        //initialize array with -1
+        for (int c = 0; c < length; c++) {
             right[c] = -1;
-        //store rightmost occurrence
-        //M is the length of Pattern P
-        for (int j = 0; j < needle.length(); j++)
+        }
+        //store occurrence
+        for (int j = 0; j < needle.length(); j++) {
             right[needle.charAt(j)] = j;
+            comparisons++;
+        }
     }
 
     /**
@@ -76,8 +114,8 @@ public class BackwardsSearch {
     /**
      * This method will be used to ...
      *
-     * @param needle
-     * @return
+     *
+     * @return needle
      */
 
     private String goodSuffix(String needle) {
