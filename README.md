@@ -1,2 +1,2 @@
-# Sorting-Searching1
+# Reverse Boyer-Moore
 A text-based searching algorithm that finds the right most occurrence of the text (the needle) searched for. This in contrast to most algorithms that find the left most occurrence. This brings you to a beautiful insight. Why not use a reverse version of the Boyer-Moore algorithm. This way you will always find the right most occurrence as fast as possible. Besides determining where the needle can be found, this code must be able to return the number of character comparisons made during the the last search.
